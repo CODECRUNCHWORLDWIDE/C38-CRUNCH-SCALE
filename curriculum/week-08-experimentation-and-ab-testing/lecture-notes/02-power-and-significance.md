@@ -22,6 +22,17 @@ Before you can size a test, you need to commit to four numbers. Every one of the
 
 You cannot drive both errors to zero with a fixed sample size — the only lever that shrinks both at once is **more data**. Sizing a test is choosing how much of that lever you're willing to pull.
 
+```mermaid
+flowchart TD
+  A{"Ship the change"} -->|Yes| B{"Was the effect real"}
+  B -->|No| C["Type I error false positive"]
+  B -->|Yes| D["Correct decision"]
+  A -->|No| E{"Was the effect real"}
+  E -->|Yes| F["Type II error false negative"]
+  E -->|No| G["Correct decision"]
+```
+*Alpha controls the top path's error; power controls the bottom path's error.*
+
 **MDE deserves its own sentence, because it's the number teams most often skip.** The MDE is not "the effect we hope to see" — it's "the smallest effect that would still be worth the engineering cost of building and maintaining this feature." A checkout redesign that lifts conversion by 0.1% (relative) probably isn't worth shipping even if you could prove it's real — so there's no reason to size a test that could detect something that small. Pick an MDE that reflects the actual decision threshold, and the required sample size will reflect it too.
 
 ## 2. The sample size formula, derived
@@ -77,6 +88,15 @@ print(f"days needed: {days_needed:.1f}")   # ≈ 5.6 days → round UP to 6 full
 ```
 
 **Two rules for rounding a duration, both non-negotiable:** round the day count **up**, never down or to the nearest — a test that ends 3 hours short of its target is underpowered, full stop. And run **at least one full 7-day cycle** regardless of what the math says, even if the sample-size math finishes in 3 days — Lecture 3 explains exactly why day-of-week effects make anything shorter unreliable.
+
+```mermaid
+flowchart LR
+  A["Baseline rate and MDE"] --> B["Required n per arm"]
+  B --> C["Total sessions needed"]
+  C --> D["Daily eligible traffic"]
+  D --> E["Days needed rounded up"]
+```
+*How a target effect size turns into a concrete test duration.*
 
 ## 4. Reading a finished test: the two-proportion z-test
 

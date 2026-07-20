@@ -19,6 +19,18 @@ A lifecycle program maps every customer to a stage and reacts to **transitions b
 
 The at-risk → win-back transition is this lecture's focus, because it's the one your model output feeds directly: **every customer who lands in `winback_email_discount` this week is a lifecycle-journey trigger, not a one-off decision.**
 
+```mermaid
+stateDiagram-v2
+  Onboarding --> Growth: Activation event
+  Growth --> AtRisk: Engagement or billing degrades
+  AtRisk --> WinbackActive: Enters winback action
+  WinbackActive --> Growth: Re-engaged
+  WinbackActive --> Churned: No response
+  AtRisk --> Churned: Cancels
+  Churned --> WinbackPostChurn: Time threshold crossed
+```
+*Lifecycle stages react to transitions, not the calendar — the at-risk to win-back edge is this lecture's focus.*
+
 ## 2. Trigger-based, not calendar-based
 
 A calendar campaign ("email everyone on the 1st of the month") treats a healthy customer and a customer about to cancel identically. A **trigger-based journey** fires off a state change — a customer's `risk_band` flipping to `"high"` and their `action` becoming `winback_email_discount` — and runs a fixed sequence from there:
@@ -80,6 +92,19 @@ seg["group"] = seg["user_id"].apply(split_group)
 ```
 
 A 50/50 split, not the "give most people the good thing" 90/10 split you might reach for instinctively — with only 58 customers in the segment, you need every holdout customer you can get to have any chance of detecting a real effect (Section 6). On this seed: **30 in treatment, 28 in holdout.**
+
+```mermaid
+flowchart TD
+  A["Winback segment 58 customers"] --> B["Deterministic hash split"]
+  B --> C["Treatment 30"]
+  B --> D["Holdout 28"]
+  C --> E["Run winback journey"]
+  D --> F["No campaign"]
+  E --> G["Measure churn rate"]
+  F --> G
+  G --> H["Significance test p 0.293"]
+```
+*The segment splits before anyone knows how a customer will respond, so the two group-level churn rates are a fair comparison.*
 
 ## 5. Measuring lift
 

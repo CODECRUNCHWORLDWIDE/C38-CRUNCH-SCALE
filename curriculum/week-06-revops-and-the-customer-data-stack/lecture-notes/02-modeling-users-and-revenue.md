@@ -26,6 +26,31 @@ The pattern — dimensional modeling — comes from data-warehousing practice go
 
 **"Conformed"** means: `dim_user` is built exactly once, and *every* fact table in the warehouse — this week's `fct_mrr_monthly`, later weeks' `fct_funnel_events`, `fct_ltv` — joins to the very same `dim_user`. If Week 8's experimentation fact and this week's revenue fact each built their own slightly-different user dimension, you'd be right back to three-numbers-for-one-metric. One `dim_user`, reused everywhere, is what "conformed" buys you.
 
+```mermaid
+erDiagram
+    DIM_USER ||--o{ FCT_MRR_MONTHLY : has
+    DIM_DATE ||--o{ FCT_MRR_MONTHLY : has
+    DIM_USER {
+        int user_id PK
+        string email
+        string company_name
+        string country
+    }
+    FCT_MRR_MONTHLY {
+        date month_date FK
+        int user_id FK
+        string plan
+        int mrr_cents
+        boolean is_active
+    }
+    DIM_DATE {
+        date month_date PK
+        int year
+        int month
+    }
+```
+*Facts carry foreign keys into conformed dimensions - the star schema shape.*
+
 ## 2. Building `dim_user`
 
 `dim_user` is staging's `stg_users` with essentially no further transformation — dimensions are usually thin wrappers once staging has done the cleaning:
@@ -147,6 +172,16 @@ WHERE dd.month_date BETWEEN '2025-01-01' AND '2025-06-01';
 ```
 
 Read the `WHERE` inside each correlated subquery carefully: a subscription counts toward a given month if it **started on or before** that month ended, **and** either was never canceled or was canceled **after** that month ended. That's how Ben's canceled old subscription (ended 2025-03-10) correctly stops contributing MRR from March onward, while his new Scale subscription picks up the same month.
+
+```mermaid
+flowchart TD
+  A["For each user and month"] --> B{"Started on or before month end"}
+  B -- No --> Z["mrr_cents equals 0"]
+  B -- Yes --> C{"Canceled at is null or canceled after month end"}
+  C -- No --> Z
+  C -- Yes --> D["mrr_cents equals that subscription's mrr_cents"]
+```
+*The per-row decision that gives every user a row in every month, active or not.*
 
 ## 6. The one trusted MRR number
 

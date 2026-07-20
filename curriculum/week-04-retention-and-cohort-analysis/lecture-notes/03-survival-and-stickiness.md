@@ -14,6 +14,16 @@ In our seed data, the May 2025 cohort has only reached month 1 as of the observa
 
 Get this wrong and you get it wrong in a specific, seductive way: if you compute month-4 retention as "active at month 4, divided by *all* signups," you're dividing by cohorts that were never eligible to reach month 4 in the first place, and the percentage silently collapses toward zero as your denominator fills up with cohorts too young to have had a chance. The fix is the same one from Lecture 1's triangle, made explicit: **only include a cohort in a given month-number's denominator if that cohort has actually had that much time to pass.**
 
+```mermaid
+flowchart LR
+  A["Cohort month"] --> B["Max month number reached by cutoff"]
+  B --> C{"Max month reached >= target month"}
+  C -->|"Yes"| D["Eligible, included in denominator"]
+  C -->|"No"| E["Not yet eligible, excluded not zero"]
+```
+
+*A cohort only enters a month number's denominator once it has actually had that much time to pass.*
+
 ```sql
 WITH cohort_max_m AS (
     -- how many calendar months of history each cohort has, as of the cutoff
@@ -135,6 +145,18 @@ A durable growth engine and a leaky bucket can sometimes look similar on *one* o
 - **Low survival, high stickiness (rare, but real)** — the users who stay are extremely engaged, but most people never make it into that group. The product likely has a narrow-but-passionate fit; the fix is usually activation and onboarding (Week 3 territory), not the core product.
 - **Low survival, low stickiness** — the leaky bucket, textbook. Neither the presence curve nor the frequency curve gives you a floor to stand on. This is the profile Challenge 1 asks you to diagnose.
 - **High survival, high stickiness** — the durable engine. Rare, valuable, and exactly what every growth team is trying to build toward.
+
+```mermaid
+flowchart TD
+  A["Survival level"] -->|"High"| B["High survival"]
+  A -->|"Low"| C["Low survival"]
+  B -->|"High stickiness"| D["Durable engine"]
+  B -->|"Low stickiness"| E["System of record, low habit"]
+  C -->|"High stickiness"| F["Narrow passionate fit"]
+  C -->|"Low stickiness"| G["Leaky bucket"]
+```
+
+*Survival and stickiness combine into four distinct product profiles, not one blended score.*
 
 ## 5. Check yourself
 

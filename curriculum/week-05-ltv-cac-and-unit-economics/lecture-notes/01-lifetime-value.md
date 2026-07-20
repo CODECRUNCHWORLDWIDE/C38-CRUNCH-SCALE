@@ -35,6 +35,17 @@ Every LTV formula in this lecture uses that margin number, never the raw `mrr`. 
 
 You've seen `NULL` mean "missing" and "not applicable." In a churn column it means something sharper: **"hasn't happened yet, as of when we looked."** A customer who signed up in November 2025 and has a `NULL` `churn_month` on 2025-12-31 isn't "retained forever" — they've simply only had one month to prove anything. This is called **right-censoring**, and it is the single biggest source of a wrong LTV.
 
+```mermaid
+flowchart TD
+  A["Customer signs up"] --> B["Observed until cutoff date"]
+  B --> C{"Churn month recorded"}
+  C -->|"Yes"| D["Known churn - fully observed"]
+  C -->|"No - value is NULL"| E["Right censored"]
+  E --> F["Proves survival only up to current age"]
+  E --> G["Not proof customer will never churn"]
+```
+*A `NULL` churn month means unresolved, not immortal — the customer has only been observed so far.*
+
 ```sql
 SELECT channel, COUNT(*) AS still_active
 FROM customers

@@ -61,6 +61,17 @@ Put the two tables side by side and the tension is the whole lesson: **the compa
 
 Every exercise so far has computed CAC, LTV, payback, and the ratio as separate steps. In practice you want one function (or one SQL view) that takes a channel and a CAC assumption and returns the whole picture — because you'll run it dozens of times: per channel, per quarter, under different assumptions, in a "what if CAC drops 20%" scenario. Build it once.
 
+```mermaid
+flowchart TD
+  A["MRR per customer"] --> D["unit_economics function"]
+  B["Retention curve"] --> D
+  C["CAC assumption"] --> D
+  D --> E["LTV floor and LTV projected"]
+  D --> F["Naive payback months"]
+  D --> G["LTV to CAC ratio and unit profitable flag"]
+```
+*Three inputs go in once; every downstream number comes out of the same function.*
+
 **pandas version** — the reusable core:
 
 ```python

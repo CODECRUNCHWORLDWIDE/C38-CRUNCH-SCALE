@@ -83,6 +83,16 @@ ORDER BY step_order;
 
 Look at the shape: the first three transitions all convert around 80% (losing roughly a fifth of users at each step is normal onboarding friction). Then `created_first_card → invited_teammate` collapses to **55.5% conversion — a 44.5% drop**, by far the worst single transition in the funnel, more than double every other step's loss rate. That's not noise; that's a real, addressable stall, and it's exactly the step leading up to the activation event Lecture 2 identified. Diagnosis and activation-event choice have converged on the same place — which is a good sign you've found something real rather than an artifact of one analysis.
 
+```mermaid
+flowchart LR
+  A["Signed up 400"] --> B["Verified email 322"]
+  B --> C["Created first board 256"]
+  C --> D["Created first card 209"]
+  D -->|"worst drop 44.5 percent"| E["Invited teammate 116"]
+  E --> F["Completed first task 101"]
+```
+*Step-over-step conversion exposes the true worst drop: created first card to invited teammate, at only 55.5 percent conversion.*
+
 ## 4. Time-to-value — the distribution, not the average
 
 **Time-to-value (TTV)** is the elapsed time between signup and the activation event, for users who reach it. Reporting only the *average* TTV is a classic mistake — it hides the shape, and time distributions are almost always right-skewed (a few very slow stragglers drag the mean up past where most users actually land).
@@ -158,6 +168,16 @@ Put §3 and §4 side by side:
 - Users create a board and a card **alone** — nothing in the current flow prompts them to invite anyone until they've already built something solo. By the time they might think to invite a teammate, they've spent two days using Crunch Boards as a single-player to-do list, which is not the product's intended value.
 
 That's a diagnosis, in one sentence: **the onboarding flow lets users complete the "solo" half of setup with no prompt toward the "collaborative" half that actually drives retention, and the biggest funnel drop sits exactly at that seam.** This is the finding Challenge 2 and the mini-project build on — turning it into a proposed fix and a quantified (projected) lift.
+
+```mermaid
+flowchart TD
+  A["User creates a board alone"] --> B["User creates a card alone"]
+  B --> C["No prompt to invite yet"]
+  C --> D["About two days pass solo"]
+  D --> E["Biggest funnel drop happens here"]
+  E --> F["Few users reach invited teammate"]
+```
+*The diagnosis as a chain: onboarding lets users finish the solo half of setup with no nudge toward the collaborative half that actually drives retention.*
 
 ## 6. Check yourself
 

@@ -108,6 +108,17 @@ The quarterly rollup:
 
 By Q4, the range spans roughly **$111,845 to $176,673** — a spread of nearly 60% around the base case. That's a wide range, and *reporting it as a wide range is the correct, honest thing to do* twelve months out. Notice, too, that the spread widens with the horizon, same as the OLS prediction interval did — the further out you look, the more room small assumption differences have to compound.
 
+```mermaid
+flowchart TD
+  A["Base case assumptions"] --> BULL["Bull deltas: higher new MRR, higher expansion, lower churn"]
+  A --> BASE["Base case forecast"]
+  A --> BEAR["Bear deltas: lower new MRR, higher churn, higher contraction"]
+  BULL --> Q4H["Q4 2026 ending MRR high, about 176,673"]
+  BASE --> Q4M["Q4 2026 ending MRR mid, about 144,946"]
+  BEAR --> Q4L["Q4 2026 ending MRR low, about 111,845"]
+```
+*How named assumption deltas off the base case fan out into the bull and bear Q4 endpoints.*
+
 ## 5. Communicating a forecast so it survives questioning
 
 A forecast memo that will hold up under a CFO's questions has a specific shape:

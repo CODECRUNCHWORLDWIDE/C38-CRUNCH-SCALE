@@ -93,6 +93,17 @@ By September the three methods span **$2,563.86 to $4,342.89** — a $1.8k gap, 
 
 **The forecast you present is not "the model's number" — it's the number you chose, for a reason you can state.** For Crunch Boards this quarter, the defensible choice is **Method B, with Method A quoted as the floor and Method C flagged as upside-if-June-repeats-but-not-a-plan.** Method A is too conservative — it barely reacts to real, recent acceleration. Method C is too exposed to a single unusually large month. Method B splits the difference using the same trailing-three-months window as C, but in dollar terms, which don't compound a possible fluke. That reasoning — not the arithmetic — is the actual content of a forecast slide. State it explicitly in your own capstone; "the forecast is $2,930 by September" with no stated method or reasoning is not a forecast, it's a guess with a decimal point.
 
+```mermaid
+flowchart LR
+  A["Method A - linear regression"] --> Compare["Compare three forecasts"]
+  B["Method B - moving average dollars"] --> Compare
+  C["Method C - compounding percent"] --> Compare
+  Compare --> Pick["Recommend Method B"]
+  Pick --> Floor["Method A as conservative floor"]
+  Pick --> Upside["Method C as upside if June repeats"]
+```
+*Three forecast methods feed one chosen recommendation, with the others kept as bounds.*
+
 ## 3. From honest numbers to an actual recommendation
 
 Lecture 2 left you with three findings that don't resolve themselves:
@@ -116,6 +127,14 @@ Every growth recommendation this course has taught you to build shares the same 
 2. **The evidence, each claim traced to a table.** Funnel, unit economics, experiment, forecast — in whatever order best supports the ask, not necessarily the order you built them.
 3. **The uncertainty, stated plainly.** Where's the sample thin? Where's a formula's assumption broken (Lecture 2, Section 4)? Where do your own forecast methods disagree, and by how much? Hiding this doesn't make the recommendation stronger — it makes it fragile the first time someone asks a follow-up question.
 4. **The next checkpoint.** What would change your mind? What number, checked again in a month, confirms or kills the recommendation? ("If `referral`'s next 12 customers show any cancellations, revisit the LTV before scaling further" is a checkpoint. "We'll see how it goes" is not.)
+
+```mermaid
+flowchart TD
+  Ask["The ask in one sentence"] --> Evidence["Evidence traced to tables"]
+  Evidence --> Uncertainty["Uncertainty stated plainly"]
+  Uncertainty --> Checkpoint["Next checkpoint to revisit"]
+```
+*The four-part shape every growth decision narrative follows, in order.*
 
 A deck, a memo, a Slack message, or a live walkthrough of your SQL — the medium doesn't matter. The four parts do.
 

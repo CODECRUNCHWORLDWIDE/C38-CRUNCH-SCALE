@@ -135,6 +135,16 @@ On SQLite, drop the `::numeric` cast — SQLite doesn't need it, but do make sur
 
 **Rewards discovery and closing, discounts the middle.** The most common model in real marketing stacks: 40% of credit to the first touch, 40% to the last touch, and the remaining 20% split evenly across whatever touches happened in between. A 1-touch path is 100% to that touch (there's no "middle" to discount). A 2-touch path is 50/50 (no room for a middle weight either — teams differ on this edge case; we split the 40/40 rule to 50/50 when there's no third touch, keeping first and last equal).
 
+```mermaid
+flowchart TD
+    A["How many touches in the path"] -->|1 touch| B["100 percent to that touch"]
+    A -->|2 touches| C["50 percent first - 50 percent last"]
+    A -->|3 or more| D["40 percent to first touch"]
+    D --> E["40 percent to last touch"]
+    D --> F["Remaining 20 percent split evenly among middle touches"]
+```
+*Position-based attribution branches on path length before splitting credit 40-20-40.*
+
 ```sql
 WITH ranked AS (
     SELECT

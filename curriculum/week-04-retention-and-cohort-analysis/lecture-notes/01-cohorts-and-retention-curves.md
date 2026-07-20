@@ -54,6 +54,16 @@ FROM users u JOIN events e ON e.user_id = u.user_id;
 
 This `month_number` is the axis every cell of the triangle sits on. It's the single idea that makes cohort analysis work: **anchor time to the individual, then aggregate**.
 
+```mermaid
+flowchart LR
+  A["Signup date"] --> C["Compute month number"]
+  B["Event date"] --> C
+  C --> D["Group by cohort and month number"]
+  D --> E["Retention triangle cell"]
+```
+
+*Every event is re-timed relative to that user's own signup before it gets aggregated into a triangle cell.*
+
 ## 4. Building the retention triangle
 
 A **retention triangle** (also called a cohort grid) puts cohorts down the rows and `month_number` across the columns. Each cell answers: *of the users who signed up in this cohort, what percent were active exactly `month_number` months later?*
@@ -110,6 +120,16 @@ Once the triangle is built, the interesting work is reading each *row* as a curv
 **Flattening (the good shape, most of the time).** Retention drops sharply in the first period or two, then levels off into a stable floor — a core group of users who keep coming back indefinitely. Almost every healthy subscription or habit product looks like this: steep initial drop, then a long flat tail. The floor, not the drop, is what you're selling to investors and to yourself. Look at the Feb cohort above: 100% → 16.7% → 16.7% → 8.3% → 25.0%. The middle two months (16.7%, 16.7%) look like a floor forming — encouraging — but month 3 dips to 8.3% and month 4 jumps back to 25.0%. With only 12 users in the cohort, each person is worth 8.3 percentage points; that's small-sample noise, not necessarily a trend reversal. **Never trust a single cohort's tail; look at where several cohorts' curves are heading.**
 
 **Smiling (rare, and worth noticing when it happens).** Retention dips and then *rises* — later-period retention higher than early-period. This shows up when a product has delayed value: think of a tool people forget about for a few months and then rediscover during a specific recurring need (tax software, a seasonal planning tool), or a network product where a user's early friends weren't active yet but are now. A smiling curve is a strong signal the product's value compounds with time, not just habit.
+
+```mermaid
+flowchart TD
+  A["Retention curve shape after the initial drop"] --> B{"Trend across later periods"}
+  B -->|"Keeps falling toward zero"| C["Terminal"]
+  B -->|"Levels off at a floor"| D["Flattening"]
+  B -->|"Dips, then rises again"| E["Smiling"]
+```
+
+*The trend after the first-period drop sorts a curve into terminal, flattening, or smiling.*
 
 ## 6. Comparing cohorts to see if the product is improving
 

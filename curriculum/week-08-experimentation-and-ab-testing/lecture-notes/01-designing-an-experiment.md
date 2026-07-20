@@ -17,6 +17,15 @@ That pitch is not yet an experiment. An experiment needs four things, in this or
 
 Skip any one of these and you don't have an experiment — you have a launch with a dashboard next to it.
 
+```mermaid
+flowchart TD
+  A["Hypothesis"] --> B["Primary metric"]
+  B --> C["Guardrail metrics"]
+  C --> D["Randomization unit"]
+  D --> E["Ready to launch"]
+```
+*The four building blocks of an experiment brief, always assembled in this order.*
+
 ## 2. Writing a falsifiable hypothesis
 
 A hypothesis is not "Express Checkout will be better." That can't be proven wrong, which means it can't be proven right either — there's no result that would make you say "I was wrong." A real hypothesis names the mechanism, the metric, and the direction:

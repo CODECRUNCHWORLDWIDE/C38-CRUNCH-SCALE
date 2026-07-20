@@ -16,6 +16,16 @@
 
 Each stage is a **funnel narrowing**, not a separate audience — the same 15 StreakLab users flow through all five, and at each stage some fraction drops off. The craft of growth work is knowing *which* stage has the worst drop-off **relative to how fixable it is**, because that's where an hour of work returns the most.
 
+```mermaid
+flowchart LR
+  A["Acquisition - signup"] --> B["Activation - habit created"]
+  B --> C["Retention - repeat checkins"]
+  C --> D["Revenue - subscription started"]
+  D --> E["Referral - invite accepted"]
+```
+
+*The same cohort of users narrows through all five AARRR stages, in order.*
+
 ## 2. Acquisition — how do people find us?
 
 Acquisition is the top of the funnel: a person becomes a `users` row. The critical discipline here is recording **`signup_channel`** at the moment of signup, not guessing at it later — by the time someone's active for a month, nobody remembers if they came from a Google ad or a friend's text.

@@ -109,6 +109,20 @@ FROM cohort_revenue_retention WHERE cohort_month >= '2025-06-01';
 
 That gives you: legacy flat value ≈98.2% (held for any age beyond 11), new-onboarding flat value ≈94.0% (held for any age beyond 6).
 
+```mermaid
+flowchart TD
+  A["Cohort signs up"] --> B{"Cohort month before June 2025"}
+  B -->|"Yes"| C["Legacy onboarding curve"]
+  B -->|"No"| D["New onboarding curve"]
+  C --> E{"Age within observed range zero to eleven"}
+  E -->|"Yes"| F["Use observed retention pct"]
+  E -->|"No, older"| G["Flat continuation at 98.2 percent"]
+  D --> H{"Age within observed range zero to six"}
+  H -->|"Yes"| I["Use observed retention pct"]
+  H -->|"No, older"| J["Flat continuation at 94.0 percent"]
+```
+*Which retention curve a cohort uses, and how to look up retention once its age exceeds what's been observed.*
+
 ## 4. Projecting existing cohorts forward to a target date
 
 Now put it together. Suppose Finance wants to know: **how much of December 2026's MRR is already "baked in" from customers who signed up in 2025** (as opposed to customers Crunch Flow hasn't sold to yet)? Each 2025 cohort's age by December 2026 is fixed by the calendar — the January cohort turns 23 months old, the December cohort turns 12.

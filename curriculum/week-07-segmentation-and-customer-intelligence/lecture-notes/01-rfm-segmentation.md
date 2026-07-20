@@ -129,7 +129,23 @@ SELECT
 FROM scored;
 ```
 
-The order of the `WHEN` clauses matters — `CASE` takes the first match, so put the most specific, highest-priority patterns first (`Champions` requires all three scores high; check that before the looser `At Risk`/`Hibernating` catch-alls). Against Crunch Flow's 30 customers, this produces:
+The order of the `WHEN` clauses matters — `CASE` takes the first match, so put the most specific, highest-priority patterns first (`Champions` requires all three scores high; check that before the looser `At Risk`/`Hibernating` catch-alls).
+
+```mermaid
+flowchart TD
+    A["RFM scores"] --> B{"All three scores 4 or higher?"}
+    B -->|Yes| C["Champions"]
+    B -->|No| D{"R high and F low?"}
+    D -->|Yes| E["New or Promising"]
+    D -->|No| F{"R low and F high?"}
+    F -->|Yes| G["At Risk"]
+    F -->|No| H{"R low and F low?"}
+    H -->|Yes| I["Hibernating"]
+    H -->|No| J["Loyal Core"]
+```
+*The CASE statement's WHEN clauses tested top to bottom, most specific pattern first.*
+
+Against Crunch Flow's 30 customers, this produces:
 
 | rfm_segment | n | avg_monetary | total_monetary |
 |---|---:|---:|---:|

@@ -73,6 +73,18 @@ FROM usage;
 
 Notice the **priority order** in this `CASE`: recency is checked *first*, before power-usage depth. That's a deliberate design choice, not an accident — a customer who used to be a heavy automation user but hasn't touched the product in 80 days is `Dormant`, full stop, regardless of how impressive their historical `power_events` count is. Recency gates everything else; depth-of-adoption only matters for customers who are still showing up. Getting this priority backwards — checking `power_events` first — would misclassify a churned power user as still-engaged, which is exactly the kind of false comfort a health score exists to prevent.
 
+```mermaid
+flowchart TD
+    A["days_since_last_event"] --> B{"NULL or greater than 60?"}
+    B -->|Yes| C["Dormant"]
+    B -->|No| D{"Greater than 15?"}
+    D -->|Yes| E["Cooling Off"]
+    D -->|No| F{"power_events 5 or more?"}
+    F -->|Yes| G["Power User"]
+    F -->|No| H["Core User"]
+```
+*Recency gates the tier first; power-usage depth only breaks the tie for customers who are still active.*
+
 Against the seed data:
 
 | behavior_segment | n | avg_total_events | avg_power_events |

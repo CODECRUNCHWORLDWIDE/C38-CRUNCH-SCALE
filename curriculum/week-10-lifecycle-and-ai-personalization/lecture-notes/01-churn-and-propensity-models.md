@@ -16,6 +16,16 @@ A churn model earns its keep the moment someone acts on its output — a CSM cal
 
 Put together: *"Will this customer, active as of September 1st, cancel their subscription by December 31st?"* That's a precise, answerable, SQL-expressible question. "Will this customer churn?" is not.
 
+```mermaid
+flowchart LR
+  A["Signup date"] --> B["Cutoff Sept 1"]
+  B --> C["Label window Sept to Dec 31"]
+  C --> D{"Canceled by Dec 31"}
+  D -->|Yes| E["Churned label 1"]
+  D -->|No| F["Retained label 0"]
+```
+*The cutoff date splits known history from the future label window used to define churn.*
+
 ## 2. The cardinal sin: leakage
 
 **Leakage** is when a feature contains information that wouldn't have been available at the moment you'd actually need the prediction — in practice, information from *after* the cutoff, or information that's really just a disguised copy of the label.
@@ -112,6 +122,20 @@ df["engagement_trend"] = df["events_30d"] - df["events_31_60d"]
 ```
 
 Against this week's seed: **236 eligible customers, 87 churn during the label window — a 36.9% base rate.** That's your baseline: a model that predicts "everyone churns" gets 36.9% precision and 100% recall on the positive class; a model that predicts "no one churns" gets 100% accuracy and is worthless. Neither number alone tells you if a model is good — which is exactly why Section 6 doesn't lead with accuracy.
+
+```mermaid
+flowchart TD
+  A["raw_subscriptions"] --> B["Eligible population filter"]
+  C["raw_events before cutoff"] --> D["Feature engineering SQL"]
+  B --> D
+  D --> E["Feature table"]
+  A --> F["Label query"]
+  E --> G["Merge on user id"]
+  F --> G
+  G --> H["Train test split"]
+  H --> I["Logistic Regression vs Random Forest"]
+```
+*From raw warehouse tables to a trained, evaluated model — features and label built as separate queries and joined on user id.*
 
 ## 5. Training the model
 

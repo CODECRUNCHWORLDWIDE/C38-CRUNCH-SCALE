@@ -108,6 +108,18 @@ MRR roughly 7.3×'d over six months (256 → 1,878), and June alone added $625 �
 
 This is where Week 5's formulas come back, applied to Crunch Boards. Three ingredients, computed in order.
 
+```mermaid
+flowchart LR
+  Spend["Channel spend"] --> CAC["CAC - spend divided by paying customers"]
+  Paying["Paying customers"] --> CAC
+  Retention["Retention curve ages 0 to 4"] --> LTV["LTV - cohort sum of margin"]
+  Margin["Contribution margin"] --> LTV
+  CAC --> Ratio["LTV to CAC ratio"]
+  LTV --> Ratio
+  Ratio --> Decision["Channel budget decision"]
+```
+*How channel spend and a retention curve combine into an LTV to CAC decision.*
+
 **Fully-loaded CAC** — total channel spend ÷ paying customers that channel produced:
 
 ```sql
@@ -206,6 +218,19 @@ referral     avg monthly churn: 0.0000
 ## 5. `fct_experiment_results` — read the lift, then read the power
 
 `onboarding_checklist_v2` ran on the May and June cohorts only (`dim_user.in_experiment = 1`, 24 users, 12 control / 12 treatment). Its outcome metric is **activation** — did the user reach `created_first_project`:
+
+```mermaid
+flowchart TD
+  Users["24 experiment users"] --> Control["Control group - 12 users"]
+  Users --> Treatment["Treatment group - 12 users"]
+  Control --> ActControl["Activation rate 66.7 percent"]
+  Treatment --> ActTreat["Activation rate 91.7 percent"]
+  ActControl --> Test["Two-proportion z-test"]
+  ActTreat --> Test
+  Test --> PValue["p is approximately 0.132"]
+  PValue --> Verdict["Not significant at alpha 0.05"]
+```
+*Path from experiment assignment to a significance verdict on the checklist lift.*
 
 ```sql
 CREATE TABLE fct_experiment_results AS

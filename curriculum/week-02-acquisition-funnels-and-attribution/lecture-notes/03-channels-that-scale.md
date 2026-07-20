@@ -132,6 +132,14 @@ ORDER BY t.user_id, t.touch_ts;
 
 User 11 is genuine: `Google Search - Brand` is their *only* touch — they searched Crunch's brand name directly and converted. That's a real, if small, acquisition. User 18 is not: they were **found by Nonbrand search on day 1, retargeted by Meta on day 5**, and only searched the brand name directly on day 9 — after two other channels had already done the work of creating awareness and intent. Last-touch handed 100% of that conversion's credit to the channel that happened to be nearest the finish line. This is the textbook shape of a channel that **reshuffles organic demand**: users type your brand name into Google right before converting *because another channel already convinced them to*, and brand search harvests credit that belongs upstream.
 
+```mermaid
+flowchart LR
+    A["Google Nonbrand - Jan 1 - creates awareness"] --> B["Meta Ads - Jan 5 - retargets"]
+    B --> C["Google Brand search - Jan 9 - last touch"]
+    C --> D["Conversion credited 100 percent to Brand search"]
+```
+*Last-touch attribution only sees the final box, hiding the discovery and retargeting work done earlier in user 18's path.*
+
 You don't need a fancier attribution model to catch this — you need to run the query that checks whether a channel's converters have a longer path *behind* their last touch, and look at it:
 
 ```sql

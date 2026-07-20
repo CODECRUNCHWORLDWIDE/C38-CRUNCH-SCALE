@@ -80,9 +80,28 @@ Run either statement fifty times with the same values and the row count never ch
 
 **Rule of thumb for this course:** for the mart sizes we work with (thousands, not billions, of rows), **truncate-and-reload is simpler, easier to reason about, and just as correct** — prefer it. Reach for upsert only when a table is genuinely too large to fully rebuild on every run, or when you're loading incrementally from an append-only event stream where "the whole history" isn't available to recompute from.
 
+```mermaid
+flowchart TD
+  A["Choosing a load pattern"] --> B{"Small enough to fully rebuild every run"}
+  B -- Yes --> C["Truncate and reload"]
+  B -- No --> D{"Have a unique key to match rows on"}
+  D -- Yes --> E["Upsert - on conflict or insert or replace"]
+  D -- No --> F["Add a unique constraint first"]
+```
+*Truncate-and-reload by default; reach for upsert only when rebuilding gets too expensive.*
+
 ## 2. Data tests — SQL assertions that fail loudly
 
 A data test is a query designed to **return zero rows when the data is healthy and one-or-more rows when it isn't.** Run your test suite after every load; if any test returns rows, the pipeline failed and you stop before anyone sees a bad dashboard. This needs no special tooling — it's plain SQL, run in sequence, with a script that checks each result's row count.
+
+```mermaid
+flowchart LR
+  A["Run the load"] --> B["Run the test suite"]
+  B --> C{"Any test returns rows"}
+  C -- Yes --> D["Stop - fix before anyone sees it"]
+  C -- No --> E["Dashboard reflects the new data"]
+```
+*Tests sit as a gate between a load finishing and anyone trusting the result.*
 
 ### Not-null
 

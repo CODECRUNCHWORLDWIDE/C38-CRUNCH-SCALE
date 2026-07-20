@@ -15,7 +15,18 @@ lr_full = LogisticRegression(max_iter=1000, random_state=42,
 df["churn_score"] = lr_full.predict_proba(scaler_full.transform(X))[:, 1]
 ```
 
-This is standard practice: validate on a split to estimate real-world performance (Lecture 1's 0.669 ROC-AUC is your honest expectation), then retrain on everything you have before deploying, because more training data almost always helps and you've already measured how good the *method* is. On this seed, `churn_score` across the full 236-customer population comes out:
+This is standard practice: validate on a split to estimate real-world performance (Lecture 1's 0.669 ROC-AUC is your honest expectation), then retrain on everything you have before deploying, because more training data almost always helps and you've already measured how good the *method* is.
+
+```mermaid
+flowchart LR
+  A["Train test split"] --> B["Validate ROC AUC 0.669"]
+  B --> C["Refit on full population"]
+  C --> D["Score all 236 customers"]
+  D --> E["Assign risk band"]
+```
+*Validate the method on a held-out split, then refit on everyone before scoring for production.*
+
+On this seed, `churn_score` across the full 236-customer population comes out:
 
 | Statistic | Value |
 |---|---:|
@@ -101,6 +112,17 @@ df["action"] = df.apply(action, axis=1)
 ```
 
 This is a **rules engine**, and it's deliberately dumb — a lookup table, not a second model. That's a feature, not a limitation: a support lead can read this table in thirty seconds, argue with a specific cell ("should medium-risk, high-value really get a nudge instead of a call?"), and change it without retraining anything. Keep the *scoring* (statistical, opaque, needs a model) and the *decisioning* (business logic, needs to be legible) in separate layers. Conflating them — burying "and therefore call them" inside the model itself — is how you end up with a system nobody can audit or adjust.
+
+```mermaid
+flowchart TD
+  A["Risk band and value tier"] --> B["High risk, high value: CSM call"]
+  A --> C["High risk, low value: Winback email"]
+  A --> D["Medium risk, high value: In app nudge"]
+  A --> E["Medium risk, low value: Nurture email"]
+  A --> F["Low risk, high value: Expansion nudge"]
+  A --> G["Low risk, low value: No action"]
+```
+*Six risk-band by value-tier cells, six actions, one lookup per customer.*
 
 ## 5. Guardrails: what the decision table doesn't do
 

@@ -56,6 +56,16 @@ There's a clean gap between `indie`'s max (2,900) and `team`'s min (4,200), and 
 | **Growth** | ≤ 30,000 | **$69/mo** | team | between `team` median bargain ($49.50) and median expensive ($78.50) |
 | **Scale** | uncapped | **$179/mo** | agency | below `agency` median expensive ($194) — leaves room to raise later |
 
+```mermaid
+flowchart TD
+  A["Account MTU"] --> B{"MTU 3000 or less?"}
+  B -->|Yes| C["Starter - 29 per month"]
+  B -->|No| D{"MTU 30000 or less?"}
+  D -->|Yes| E["Growth - 69 per month"]
+  D -->|No| F["Scale - 179 per month"]
+```
+*Every account's MTU routes it into exactly one of the three tiers.*
+
 Every price sits *inside* its segment's comfortable zone from Lecture 1 — none of them are guesses. That's the difference between "we designed three tiers" and "we designed three tiers we can defend in a pricing review."
 
 ### 2.2 Compute the repackaging's revenue impact
@@ -128,6 +138,15 @@ A tier isn't just "more MTU for more money." It's also which **features** live b
 - **Under-gating** — putting a feature that only your biggest, most sophisticated customers value (say, SSO or an audit log) into your cheapest tier. You've given away something worth a lot to a small number of buyers, for free, to everyone.
 - **Over-gating** — putting a feature that *most* customers expect as table stakes (say, basic email support, or CSV export) behind your top tier. Customers feel nickel-and-dimed, and it becomes a reason to churn or to badmouth you, for very little incremental revenue.
 - **The cliff.** This is the one to watch hardest: an account with usage *just* over a tier's cap gets the **full** price jump to the next tier for barely more usage than an account that stayed just under it. Concretely — imagine a `team` account that grows from 29,500 MTU (comfortably `Growth`, $69/mo) to 31,000 MTU next quarter. Under a hard-cap design, that's a jump straight to `Scale` at $179/mo — a **+159% bill increase** for **+5% more usage**. That account is far more likely to churn in anger than to shrug and pay it. Good packaging either smooths the boundary (usage-based overage pricing instead of a hard wall — e.g., $0.005/tracked-user above the cap) or adds an intermediate step (an add-on, not a full tier jump) so growth in usage doesn't trigger a cliff in price. Challenge 1 has you design exactly this fix for a real ScopeIQ scenario.
+
+```mermaid
+flowchart LR
+  A["Team account at 29500 MTU - Growth 69 per month"] --> B["Usage grows to 31000 MTU"]
+  B --> C["Hard cap crossed"]
+  C --> D["Jumps to Scale 179 per month"]
+  D --> E["Plus 159 percent bill for plus 5 percent usage"]
+```
+*A hard tier cap turns a small usage increase into a disproportionate price jump.*
 
 A reasonable first-pass feature map for ScopeIQ's three tiers:
 

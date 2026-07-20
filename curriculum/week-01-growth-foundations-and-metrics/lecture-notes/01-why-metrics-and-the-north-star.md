@@ -86,6 +86,18 @@ Weekly Engaged Users
   + Returning Engaged Users (activated in a prior week, still checking in 3+ times)
 ```
 
+```mermaid
+flowchart TD
+  A["Weekly Engaged Users"] --> B["New Activated Users this week"]
+  A --> C["Returning Engaged Users"]
+  B --> D["Signups"]
+  B --> E["Activation Rate"]
+  C --> F["Week-2 Retention"]
+  C --> G["Reactivation Rate"]
+```
+
+*How StreakLab's north star decomposes into input metrics each team can own.*
+
 Which unpacks one level further into metrics a team can actually work on:
 
 | Input metric | Definition | Which team owns moving it |

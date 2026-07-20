@@ -24,6 +24,17 @@ That's the entire mechanism. A twelve-month forecast is just this identity appli
 
 The entire forecasting problem reduces to: **where do those four numbers come from for a month that hasn't happened yet?** The rest of this lecture answers that.
 
+```mermaid
+flowchart LR
+  S["Starting MRR"] --> E["Ending MRR"]
+  N["New MRR"] --> E
+  X["Expansion MRR"] --> E
+  C["Contraction MRR minus"] --> E
+  H["Churned MRR minus"] --> E
+  E -->|"becomes next month"| S2["Starting MRR month n plus 1"]
+```
+*The bridge identity: four drivers roll into ending MRR, which chains forward as next month's starting MRR.*
+
 ## 2. Reading the rates out of your actuals
 
 You don't guess `expansion_mrr`, `contraction_mrr`, and `churned_mrr` in dollars directly — dollar amounts don't generalize as the business grows. You express each as a **rate against the starting MRR that month**, because rates are stable(ish) even while the dollar base compounds.

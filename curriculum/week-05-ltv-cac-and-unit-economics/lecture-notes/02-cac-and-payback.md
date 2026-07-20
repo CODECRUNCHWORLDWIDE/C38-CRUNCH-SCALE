@@ -51,6 +51,17 @@ GROUP BY channel;
 
 Same total budget on both channels ($72,000 for the year — $6,000/month each), completely different real cost per customer once you count who's being paid to run it. The moment you load in team cost, `organic_content` flips from "5× cheaper" to "29% more expensive" than `paid_search`, on a blended full-year basis. **Rule: if a CAC doesn't include the salaries of the people running the channel, it isn't CAC — it's a partial number pretending to be one.**
 
+```mermaid
+flowchart TD
+  A["Ad spend"] --> M["Media only CAC"]
+  A --> C["Total loaded spend"]
+  B["Team cost"] --> C
+  C --> D["Divide by new customers"]
+  D --> F["Fully loaded CAC"]
+  M -.->|"Missing team cost"| F
+```
+*Media-only CAC leaves team cost out of the sum; fully-loaded CAC puts it back before dividing.*
+
 ## 2. Blended CAC hides a trend — look at trailing CAC too
 
 "Blended CAC" — total spend over the whole year divided by total new customers over the whole year — is the number above. It's useful for a scorecard, but it answers the wrong question if you're deciding what to do *next*. The right question for a forward decision is: **what does it cost to acquire the next customer, right now?**
@@ -154,6 +165,15 @@ organic (Q4):        1.26
 ```
 
 The standard SaaS heuristics: **3:1 or higher is healthy**, **1:1–3:1 is marginal — profitable in theory but thin, watch it closely**, and **below 1:1 means you're spending more to acquire a customer than that customer will ever be worth.** By that yardstick: `paid_search` at 0.67:1 is underwater with no visible trend fixing it (Section 2 showed its CAC is flat, not improving). `organic_content` is *also* underwater on a blended basis (0.80:1) — but its trailing-quarter ratio (1.26:1) is above water and its CAC is falling every quarter, which is a completely different trajectory than a channel that's just as unprofitable and going nowhere. **The ratio alone doesn't tell you which channel to fix, pause, or scale — the ratio plus its trend does.** That judgment call is exactly what the mini-project asks you to make.
+
+```mermaid
+flowchart TD
+  A["LTV to CAC ratio"] --> B{"Where does it fall"}
+  B -->|"3 or higher"| C["Healthy"]
+  B -->|"1 to 3"| D["Marginal - watch closely"]
+  B -->|"below 1"| E["Underwater - losing money per customer"]
+```
+*The standard SaaS health bands the LTV:CAC ratio gets checked against.*
 
 ## 5. Check yourself
 

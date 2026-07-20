@@ -104,6 +104,21 @@ Churned isn't part of that sum — it's a *separate* count of people who dropped
 churned(period) = active(period − 1) − retained(period)
 ```
 
+```mermaid
+flowchart TD
+  A["User in a given period"] --> B{"Active this period"}
+  B -->|"No"| C{"Active previous period"}
+  C -->|"Yes"| D["Churned"]
+  C -->|"No"| Z["Inactive, no history"]
+  B -->|"Yes"| E{"First ever active period"}
+  E -->|"Yes"| F["New"]
+  E -->|"No"| G{"Active previous period"}
+  G -->|"Yes"| H["Retained"]
+  G -->|"No"| I["Resurrected"]
+```
+
+*The four growth-accounting buckets fall out of two questions: active now, and active before.*
+
 ### Computing it in SQL
 
 The mechanics: build a calendar "spine" (every month from a user's signup through the observation cutoff, even months with zero activity), flag which months were active, then use `LAG` to compare each month to the one right before it.

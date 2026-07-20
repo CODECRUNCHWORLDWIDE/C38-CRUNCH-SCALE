@@ -163,6 +163,16 @@ Before reading a single significance number from any test, in this order:
 
 A result that survives all five is one you can actually act on. A result that skips straight to "p < 0.05, ship it" has survived none of them.
 
+```mermaid
+flowchart TD
+  A["Check SRM"] --> B["Check segment balance"]
+  B --> C["Check peeking discipline"]
+  C --> D["Check novelty or primacy"]
+  D --> E["Check comparison count"]
+  E --> F["Trust the result"]
+```
+*The five-trap checklist as sequential gates before trusting any significance number.*
+
 ## 7. Check yourself
 
 - Why does checking a test's p-value every day and stopping at first significance change the *real* false-positive rate, even though each individual check still uses α = 0.05?

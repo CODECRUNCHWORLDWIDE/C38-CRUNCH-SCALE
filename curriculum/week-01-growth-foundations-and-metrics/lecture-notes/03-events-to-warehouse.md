@@ -31,6 +31,24 @@ Every event row needs, at minimum:
 | A timestamp | When, with enough precision to order same-day events | `event_time` |
 | Optional value/properties | Numeric or structured detail specific to that event type | `event_value` (only meaningful for `subscription_started`) |
 
+```mermaid
+erDiagram
+    USERS ||--o{ EVENTS : performs
+    USERS {
+        int user_id
+        string signup_channel
+    }
+    EVENTS {
+        int event_id
+        int user_id
+        string event_name
+        datetime event_time
+        numeric event_value
+    }
+```
+
+*One dimension table of who users are, one fact table of everything they did.*
+
 Two design rules that separate a real event schema from an accidental mess:
 
 - **Events are immutable and append-only.** You never `UPDATE` an event row — if a check-in gets deleted in the app, you log a *new* event (`checkin_deleted`) rather than deleting or editing the old row. This is what makes an event table auditable: it's a permanent, tamper-evident log, exactly like a bank ledger never erases a transaction — it posts a reversing entry.
@@ -69,6 +87,14 @@ events, users        cleaned, typed,           one table per business
 - **Raw** is what you loaded this week: append-only, untouched, the permanent source of truth.
 - **Staging** applies light, reversible cleaning — cast types, drop exact duplicate `event_id`s, rename cryptically-named columns. Still one row per event.
 - **Marts** are where a metric tree actually gets fast to query: a `mart_weekly_engagement` table might have one row per `(user_id, week)` with a precomputed `checkin_count` and `is_engaged` flag, refreshed on a schedule.
+
+```mermaid
+flowchart LR
+  A["Raw - events and users"] --> B["Staging - cleaned typed deduplicated"]
+  B --> C["Marts - one table per business question"]
+```
+
+*Raw events flow through staging into purpose-built marts, never the reverse.*
 
 This week you work entirely against **raw** — that's deliberate, because you need to trust you can derive every mart from raw before you're allowed to shortcut through one. Week 6 (RevOps & the customer data stack) builds staging and marts properly, with `dbt`-style transformation SQL. For now: raw in, metric tree queried straight out of raw, every time.
 

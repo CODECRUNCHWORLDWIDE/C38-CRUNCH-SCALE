@@ -72,6 +72,14 @@ Note this is built as a `VIEW`, not a table with an `INSERT`. That's a real, com
 
 Marts are where staging models become **dimensions** (who/what/when — `dim_user`, `dim_date`, `dim_plan`) and **facts** (measurable events/snapshots — `fct_mrr_monthly`, `fct_events`, `fct_subscription_changes`). This is the layer a growth analyst, a RevOps lead, or a Python notebook actually queries. It should never require knowing which raw system a number originally came from. Lecture 2 builds this layer in depth.
 
+```mermaid
+flowchart LR
+  S["Source systems"] --> R["Raw - landed as-is"]
+  R --> ST["Staging - cleaned typed deduped conformed"]
+  ST --> M["Marts - business-ready dimensions and facts"]
+```
+*The one-way pipeline every number in this warehouse travels through, source to mart.*
+
 ## 3. ETL vs. ELT — and why this course does ELT
 
 **ETL** (Extract, Transform, Load) transforms data *before* it lands in the warehouse — you write a script that reads from Stripe's API, reshapes it, and only then inserts clean rows. **ELT** (Extract, Load, Transform) loads the raw data first, exactly as the source gave it, and does all transformation *inside the warehouse* with SQL — which is exactly the raw → staging → marts pattern above.
@@ -84,6 +92,17 @@ Marts are where staging models become **dimensions** (who/what/when — `dim_use
 | Auditability | Depends on the script | High — every layer is a queryable SQL object |
 
 ELT wins for a RevOps warehouse because the whole point is **auditability**: when Finance asks "why does this month's MRR differ from last week's report," you want the answer to be a SQL query you can run right now against unmodified raw data, not "let me find the old script and its logs."
+
+```mermaid
+flowchart LR
+  subgraph ETL["ETL - transform outside the warehouse"]
+    E1["Extract"] --> T1["Transform in a script"] --> L1["Load clean result"]
+  end
+  subgraph ELT["ELT - this course"]
+    E2["Extract"] --> L2["Load raw data untouched"] --> T2["Transform in SQL - raw to staging to marts"]
+  end
+```
+*Where the transform step happens is the whole difference between ETL and ELT.*
 
 ## 4. The semantic layer — where "MRR" gets defined once
 

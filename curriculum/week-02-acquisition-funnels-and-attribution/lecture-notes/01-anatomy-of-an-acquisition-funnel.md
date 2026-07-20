@@ -117,6 +117,14 @@ Two window functions doing real work here:
 
 Read the two rate columns differently: `pct_of_top` tells a VP "half of everyone who visited eventually paid." `pct_of_prev_step` tells the activation team "of the people who signed up, 81.3% went on to activate" — the number they can actually move by changing onboarding, isolated from acquisition-quality noise upstream.
 
+```mermaid
+flowchart TD
+    A["site_visit - 20 users - 100 pct of top"] --> B["signup - 16 users - 80 pct of top"]
+    B --> C["activated - 13 users - 65 pct of top"]
+    C --> D["paid_conversion - 10 users - 50 pct of top"]
+```
+*Each stage narrows the funnel; pct_of_top always compares back to the original 20 site visits, while pct_of_prev_step compares each arrow to the stage before it.*
+
 ## 4. Per-user step timing with `LAG`
 
 Counts tell you *where* people drop off. Timing tells you *how long* the ones who don't drop off take — and that matters for the next section. `LAG() OVER (PARTITION BY user_id ORDER BY event_ts)` gives every event row a look back at that same user's previous event:
@@ -177,6 +185,14 @@ ORDER BY fv.user_id;
 ```
 
 Every one of our ten payers converts within 4 days of their first visit, so all ten pass a 14-day window — but write the window explicitly anyway. A funnel query with no time bound quietly answers "did they ever, eventually convert" (which inflates old cohorts that had more time) instead of "did *this* visit lead to *this* conversion" (which is comparable across cohorts). On SQLite, replace `+ INTERVAL '14 days'` with `datetime(visit_ts, '+14 days')`.
+
+```mermaid
+flowchart LR
+    A["First site visit"] --> B{"Paid conversion within 14 days"}
+    B -->|Yes| C["Counted as converted in window"]
+    B -->|No| D["Not counted - stale conversion"]
+```
+*A conversion window turns an unbounded ever eventually question into a bounded, comparable one.*
 
 ## 6. The full funnel, correctly windowed
 

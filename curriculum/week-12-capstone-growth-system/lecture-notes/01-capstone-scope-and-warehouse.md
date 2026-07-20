@@ -34,6 +34,15 @@ Week 6 taught the three-layer shape — **raw → staging → marts** — on `cr
 
 Raw stays untouched — you already loaded it in the README, exactly as given, and nothing in this week ever runs `UPDATE`/`DELETE` against a `raw_*` table. Staging cleans and types each source, one at a time, no cross-source joins yet. Marts assemble the business-ready dimensions and facts that Lecture 2 builds and the mini-project ships.
 
+```mermaid
+flowchart LR
+  Raw["Raw tables - given"] --> Staging["Staging views - typed and cleaned"]
+  Staging --> Marts["Mart tables - dims and facts"]
+  Marts --> Dims["dim_user and dim_date"]
+  Marts --> Facts["fct_acquisition fct_mrr_monthly fct_unit_economics fct_experiment_results"]
+```
+*Crunch Boards data moves raw to staging to marts, the same three-layer shape as Week 6.*
+
 ## 3. Staging — five views, no business logic yet
 
 Staging's job, per source table, is narrow: cast types correctly, standardize vocabulary, and — critically for this dataset — **decide what "as of" means**. Build all five as views:

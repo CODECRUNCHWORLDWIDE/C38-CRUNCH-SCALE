@@ -138,6 +138,14 @@ $45 → $55: elasticity = -2.63
 
 Read `|E| > 1` as **elastic** — demand falls *faster*, proportionally, than price rises, so raising price in that range *loses* revenue. `|E| < 1` is **inelastic** — demand barely reacts, so raising price *gains* revenue. Every segment of ScopeIQ's tested range is elastic (`|E|` always above 1), and elasticity gets *more* elastic — demand more sensitive — the higher the price climbs. That's the mechanism behind Section 1.2's result: once you're elastic, every further price increase loses more in volume than it gains in price, which is exactly what pushed the revenue-maximizing price below $39.
 
+```mermaid
+flowchart TD
+  A["Compute elasticity E at a price"] --> B{"Absolute value of E greater than 1?"}
+  B -->|Yes - elastic| C["Raising price loses revenue"]
+  B -->|No - inelastic| D["Raising price gains revenue"]
+```
+*The elastic or inelastic split is the entire rule for whether a price increase helps or hurts revenue.*
+
 ### 2.2 Point elasticity — at an exact price, using the fitted curve
 
 Arc elasticity needs two observed points. **Point elasticity** uses calculus on the fitted line to get elasticity at any single price, including ones you never tested:
@@ -193,6 +201,19 @@ Both levers reduce the **realized** churn below whatever the raw elasticity assu
 ## 6. The full forecast — putting it together
 
 `subscription_base` holds ScopeIQ's real installed base at the moment of the decision: 1,150 `Starter`, 640 `Growth`, 85 `Scale`. The proposal on the table: raise `Growth` from **$69 → $79** (+14.49%), for new signups immediately and for existing `Growth` customers after the 60-day grandfather window. Forecast the `Growth` tier's MRR 90 days out (one full grandfather window plus one signup cohort), **before expansion revenue and the discount offer — those layer on top in the mini-project.**
+
+```mermaid
+flowchart TD
+  A["Proposed change - Growth 69 to 79"] --> B["New signup impact - elasticity -1.78"]
+  A --> C["Existing base impact - elasticity -0.35"]
+  B --> D["About 30 new signups per month"]
+  C --> E["608 of 640 retained"]
+  D --> F["90 day MRR with change"]
+  E --> F
+  F --> G["Compare to counterfactual MRR"]
+  G --> H["Net impact plus 2702 per month"]
+```
+*The 90-day forecast combines a new-signup elasticity branch and an existing-base elasticity branch into one MRR comparison.*
 
 **New-signup impact.** `price_experiment` never tested $69 or $79 directly — this is an extrapolation beyond the observed $29–$55 range, so use the *closest-magnitude* arc elasticity as the best available stand-in: the $39→$45 jump (+15.4%) is the closest in percentage size to $69→$79 (+14.5%), with elasticity **−1.78**.
 

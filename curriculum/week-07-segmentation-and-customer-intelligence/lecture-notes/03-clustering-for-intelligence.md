@@ -53,6 +53,15 @@ df = pd.read_sql_query(query, conn)
 
 `pd.read_sql_query` runs the exact SQL string against the open connection and returns a `DataFrame` with one row per customer, columns matching the `SELECT` list. This is the pattern for the rest of the week — and honestly the rest of your career: **the database does the joining and aggregating (it's faster and less error-prone at that than pandas is), and pandas does the modeling** (which SQL genuinely can't do — no engine ships a `KMEANS()` aggregate function).
 
+```mermaid
+flowchart LR
+    A["SQL feature matrix"] --> B["pandas DataFrame"]
+    B --> C["StandardScaler"]
+    C --> D["KMeans k equals 5"]
+    D --> E["Named personas"]
+```
+*The full lecture 3 pipeline: the database joins and aggregates, pandas scales and clusters, a human names the result.*
+
 ## 3. Step 2 — scale the features before clustering, or the results are meaningless
 
 k-means measures **distance** between customers in feature space — literally, Euclidean distance across the 5 numeric columns. That's the trap: `monetary` ranges from `0` to over `1,500`; `power_events` ranges from `0` to `14`. Feed those raw into k-means and `monetary` alone will dominate every distance calculation — the algorithm will effectively cluster on spend and ignore the other four columns almost entirely, no matter how meaningful they are.

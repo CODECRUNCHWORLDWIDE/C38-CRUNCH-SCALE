@@ -4,6 +4,16 @@
 
 The "aha moment" is growth folklore for a real, measurable thing: the specific early behavior that most cleanly separates users who stick around from users who don't. Facebook's early growth team is widely credited with framing theirs as "7 friends in 10 days"; Twitter's as "following 30 accounts." Whether or not those exact numbers are gospel, the *method* behind them is exactly reproducible, and this lecture is that method.
 
+```mermaid
+flowchart TD
+  A["Define retention yardstick"] --> B["Build one row per user with flags"]
+  B --> C["Compute lift for each candidate"]
+  C --> D["Check reach reverse causation and window leakage"]
+  D --> E["Choose the aha moment"]
+  E --> F["Confirm with an experiment later"]
+```
+*The aha-moment method, start to finish: a reproducible pipeline from retention yardstick to validated activation event.*
+
 ## 1. Define retention first — you need a yardstick
 
 You cannot ask "what predicts retention?" without first defining retention. This week we use a simple, deliberately blunt definition so the mechanics stay clear (Week 4 builds the full cohort-retention machinery):
@@ -107,6 +117,16 @@ A big lift number is not automatically a decision. Check for these before you co
 ### Trap 2 — reverse causation / endogeneity
 
 `completed_first_task` has almost the same lift as `invited_teammate` (+47.6pp vs. +50.4pp). Tempting to call it a tie. But look at *when* it happens: in this data, `completed_first_task` only fires **after** `invited_teammate` for the overwhelming majority of users who reach it (101 of the 116 inviters go on to complete a task — check it: `SELECT COUNT(*) FROM flags WHERE completed_task AND invited;`). That ordering matters. A user who has already invited a teammate and is completing tasks with them is already deep into being an engaged, retained user — "completing a task" isn't *causing* their retention so much as *confirming* it. This is **reverse causation**: the metric looks predictive because it's a late symptom of the same underlying engagement, not an early lever you can pull. Prefer the *earliest* event in a causal chain that still carries strong lift, not the latest one that merely correlates.
+
+```mermaid
+flowchart LR
+  A["Signup"] --> B["Invited teammate"]
+  B --> C["Completed first task"]
+  C --> D["Retained user"]
+  B -->|"early lever"| D
+  C -->|"late symptom"| D
+```
+*Completed first task fires after invited teammate for most users — it looks predictive because it is a late symptom, not an early lever.*
 
 ### Trap 3 — window leakage (using future information)
 

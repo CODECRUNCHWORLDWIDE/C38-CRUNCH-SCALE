@@ -112,6 +112,23 @@ Where curves cross, you get a named, actionable price point:
 - **PME — Point of Marginal Expensiveness** = **Bargain ∩ Too Expensive**. Above this price, more people have already refused to buy than still call it a bargain — a ceiling. Blended: **PME ≈ $68.00** (33.3%).
 - **IDP — Indifference Price Point** = **Bargain ∩ Getting Expensive**. Where "still a bargain" and "starting to hesitate" swap places — a secondary central estimate. Blended: **IDP ≈ $59.00** (40.0%).
 
+```mermaid
+flowchart TD
+  Q1["Too Cheap question"] --> C1["Too Cheap curve - decreasing"]
+  Q2["Cheap question"] --> C2["Bargain curve - decreasing"]
+  Q3["Expensive question"] --> C3["Getting Expensive curve - increasing"]
+  Q4["Too Expensive question"] --> C4["Too Expensive curve - increasing"]
+  C1 --> I1["OPP - Too Cheap meets Too Expensive"]
+  C4 --> I1
+  C1 --> I2["PMC - Too Cheap meets Getting Expensive"]
+  C3 --> I2
+  C2 --> I3["PME - Bargain meets Too Expensive"]
+  C4 --> I3
+  C2 --> I4["IDP - Bargain meets Getting Expensive"]
+  C3 --> I4
+```
+*Each of the four PSM questions becomes a curve, and pairwise curve intersections yield the four named price points.*
+
 Put together: **`[PMC, PME] = [$50, $68]`** is the *acceptable price range* for ScopeIQ, with **OPP ≈ $60.50** as the single best-guess sweet spot, if you had to ship one flat number tomorrow.
 
 **And there's the trap.** ScopeIQ's actual price is $39 — comfortably *below* PMC. The blended survey says: *you are leaving money on the table, full stop, raise the price to somewhere in the $50–68 zone.* That's a true statement about the average respondent. It is also nearly useless as pricing advice, because there is no average respondent — there's an indie builder and there's an agency, and blending them together produced a single number that fits neither.

@@ -14,6 +14,15 @@ Here's why it's the highest-leverage stage:
 
 This is why growth teams spend a disproportionate amount of their roadmap on the first session, first day, and first week. It's the cheapest lever with the fastest read-out.
 
+```mermaid
+flowchart LR
+  A["Acquisition"] --> B["Activation the gate"]
+  B --> C["Retention"]
+  C --> D["Referral"]
+  D --> E["Revenue"]
+```
+*The AARRR funnel: activation is the narrow gate every downstream stage must pass through.*
+
 ## 2. What an activation event actually is
 
 An **activation event** is a single, observable action (or short combination of actions) in your event log that marks the moment a user first experienced your product's core value.
